@@ -1,0 +1,97 @@
+{
+  "spec": "2026-07-28",
+  "targets": [
+    {
+      "url": "https://trigsight.vercel.app/api/mcp",
+      "counts": {
+        "pass": 4,
+        "fail": 6,
+        "inconclusive": 0,
+        "skipped": 0,
+        "must_violations": 6
+      },
+      "findings": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "verdict": "pass",
+          "observed": "403",
+          "detail": ""
+        },
+        {
+          "rule": "get-405",
+          "severity": "MUST",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "fail",
+          "observed": "200",
+          "detail": "GET answered with content. A client may read this as an older revision and negotiate down."
+        },
+        {
+          "rule": "delete-405",
+          "severity": "MUST",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "pass",
+          "observed": "405",
+          "detail": ""
+        },
+        {
+          "rule": "protocol-version-header",
+          "severity": "MUST",
+          "clause": "Request Metadata / Protocol Version Header",
+          "verdict": "fail",
+          "observed": "200",
+          "detail": "A request without MCP-Protocol-Version was accepted, so the server cannot know which protocol era its caller speaks."
+        },
+        {
+          "rule": "header-body-match",
+          "severity": "MUST",
+          "clause": "Server Validation",
+          "verdict": "fail",
+          "observed": "200",
+          "detail": "Mcp-Name contradicted params.name and was not rejected. An intermediary routing on the header would disagree with what the server executes."
+        },
+        {
+          "rule": "unknown-method-404",
+          "severity": "MUST",
+          "clause": "Request Metadata / Protocol Version Header",
+          "verdict": "fail",
+          "observed": "200 / code=-32601",
+          "detail": "An unknown method must return 404 with -32601 so a client can tell a modern server from a legacy 404."
+        },
+        {
+          "rule": "no-initialize",
+          "severity": "MUST",
+          "clause": "Backward Compatibility",
+          "verdict": "fail",
+          "observed": "200, claims 2026-07-28",
+          "detail": "The server answers the removed initialize handshake while advertising 2026-07-28. If that version is 2026-07-28 it is advertising a revision it does not implement."
+        },
+        {
+          "rule": "notification-202",
+          "severity": "MUST",
+          "clause": "Sending Messages 5",
+          "verdict": "fail",
+          "observed": "200",
+          "detail": "Expected 202 or a 4xx."
+        },
+        {
+          "rule": "accept-both",
+          "severity": "SHOULD",
+          "clause": "Sending Messages 6",
+          "verdict": "pass",
+          "observed": "application/json",
+          "detail": ""
+        },
+        {
+          "rule": "session-id-ignored",
+          "severity": "SHOULD",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "pass",
+          "observed": "not echoed",
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}
