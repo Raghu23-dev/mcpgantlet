@@ -4,6 +4,13 @@ Generated from Conventional Commits. Notable changes per release.
 
 ## [Unreleased]
 
+## [0.3.2] — 2026-08-21
+
+### Fixed
+- The landing page and `/health` advertised `0.1.0` across every release, so a viewer comparing
+  the version against the repo's releases saw an abandoned deployment. Found by viewing the live
+  instance as a visitor.
+
 ## [0.3.1] — 2026-08-21
 
 ### Fixed
