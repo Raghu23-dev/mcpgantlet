@@ -2,22 +2,22 @@
   "spec": "2026-07-28",
   "targets": [
     {
-      "url": "https://trigsight.vercel.app/api/mcp",
+      "url": "http://localhost:8010/v1/chat/completions",
       "counts": {
-        "pass": 10,
-        "fail": 0,
-        "inconclusive": 0,
+        "pass": 7,
+        "fail": 2,
+        "inconclusive": 1,
         "skipped": 0,
-        "must_violations": 0
+        "must_violations": 2
       },
       "findings": [
         {
           "rule": "origin-403",
           "severity": "MUST",
           "clause": "Security & Endpoint 1",
-          "verdict": "pass",
-          "observed": "403",
-          "detail": ""
+          "verdict": "inconclusive",
+          "observed": "baseline 400",
+          "detail": "The same request without an Origin header was already refused, so this server's Origin handling cannot be observed. Not a defect and not a pass \u2014 supply a request this server accepts to test it."
         },
         {
           "rule": "get-405",
@@ -47,24 +47,24 @@
           "rule": "header-body-match",
           "severity": "MUST",
           "clause": "Server Validation",
-          "verdict": "pass",
-          "observed": "400 / -32020",
-          "detail": ""
+          "verdict": "fail",
+          "observed": "400 / code=invalid_request",
+          "detail": "Rejected, but not with -32020 (HeaderMismatch), so a client cannot distinguish this from other 400s."
         },
         {
           "rule": "unknown-method-404",
           "severity": "MUST",
           "clause": "Request Metadata / Protocol Version Header",
-          "verdict": "pass",
-          "observed": "404 / -32601",
-          "detail": ""
+          "verdict": "fail",
+          "observed": "400 / code=invalid_request",
+          "detail": "An unknown method must return 404 with -32601 so a client can tell a modern server from a legacy 404."
         },
         {
           "rule": "no-initialize",
           "severity": "MUST",
           "clause": "Backward Compatibility",
           "verdict": "pass",
-          "observed": "404 \u2014 initialize not implemented",
+          "observed": "400 \u2014 no initialize result",
           "detail": ""
         },
         {
@@ -72,7 +72,7 @@
           "severity": "MUST",
           "clause": "Sending Messages 5",
           "verdict": "pass",
-          "observed": "202, empty body",
+          "observed": "400 \u2014 notification declined, which is permitted",
           "detail": ""
         },
         {
