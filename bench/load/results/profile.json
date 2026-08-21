@@ -1,0 +1,61 @@
+{
+  "url": "http://127.0.0.1:8401/mcp",
+  "requests_per_step": 150,
+  "steps": [
+    {
+      "concurrency": 1,
+      "p50_ms": 0.64,
+      "p95_ms": 1.06,
+      "p99_ms": 1.52,
+      "mean_ms": 0.72,
+      "throughput_rps": 1393.1,
+      "succeeded": 150,
+      "failed": 0,
+      "errors": {}
+    },
+    {
+      "concurrency": 10,
+      "p50_ms": 8.4,
+      "p95_ms": 16.11,
+      "p99_ms": 38.23,
+      "mean_ms": 10.49,
+      "throughput_rps": 953.5,
+      "succeeded": 150,
+      "failed": 0,
+      "errors": {}
+    },
+    {
+      "concurrency": 50,
+      "p50_ms": 92.77,
+      "p95_ms": 437.17,
+      "p99_ms": 479.23,
+      "mean_ms": 143.24,
+      "throughput_rps": 349.1,
+      "succeeded": 150,
+      "failed": 0,
+      "errors": {}
+    }
+  ],
+  "harness_ceiling_rps": {
+    "1": 1658.3,
+    "10": 925.5,
+    "50": 367.1
+  },
+  "cliffs": [
+    {
+      "concurrency": 1,
+      "kind": "harness_limited",
+      "detail": "throughput 1393 rps is at this harness's own ceiling of 1658 rps. Degradation at or above this concurrency cannot be attributed to the server \u2014 move the client to a separate host to measure it."
+    },
+    {
+      "concurrency": 10,
+      "kind": "harness_limited",
+      "detail": "throughput 954 rps is at this harness's own ceiling of 926 rps. Degradation at or above this concurrency cannot be attributed to the server \u2014 move the client to a separate host to measure it."
+    },
+    {
+      "concurrency": 50,
+      "kind": "harness_limited",
+      "detail": "throughput 349 rps is at this harness's own ceiling of 367 rps. Degradation at or above this concurrency cannot be attributed to the server \u2014 move the client to a separate host to measure it."
+    }
+  ]
+}
