@@ -60,7 +60,7 @@ So findings are now classified:
 - **real defect** — the rule is unchanged across revisions, so the server's *own* target
   revision requires it too.
 
-Under that split: **26 version gaps, 5 real defects.** The honest criterion-2 result is the
+Under that split: **18 version gaps, 5 real defects.** (Written as 26 when this report was first generated. `third-party.json` from the same run records 18, and re-running the audit against the same five servers reproduces 18 — so 18 is the number. Why the prose said 26 is not recoverable from the artifacts; the machine-readable output is authoritative, which is why the claim gate reads the JSON rather than this file.) The honest criterion-2 result is the
 second number, and it is a harder test than the one originally written.
 
 ## The probe was wrong first, and reported four vulnerabilities anyway
