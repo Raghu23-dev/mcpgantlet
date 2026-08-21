@@ -49,10 +49,18 @@ Before auditing anything, every target was asked which revision it speaks:
 mandatory request-metadata headers, so a 2025-06-18 server fails most of its MUSTs by
 construction while being perfectly conformant to what it targets.
 
-A naive run would have reported roughly **40 MUST violations across five servers**, every one
-technically accurate and completely misleading — the same "97% of servers flagged at under 50%
+A naive run would have reported **23 failures across five servers** — 18 version gaps plus 5
+real defects, which is also the total fail count in `third-party.json` — every one technically
+accurate and most of it misleading. That is the same "97% of servers flagged at under 50%
 precision" noise `docs/01-problem.md` criticises existing scanners for. Producing it would have
 made this tool the thing it was built to replace.
+
+**Corrected 2026-08-21.** This paragraph said "roughly 40". No artifact from this run supports
+40: the JSON gives 18 + 5 = 23, and summing `counts.fail` across the five reports also gives 23.
+The figure reached a deck and a LinkedIn draft before being caught, because `verify_claims.py`
+pools every project's numbers and fusegrid's baseline legitimately contains 40 — so a wrong
+number for *this* project passed as a real number from another one. Where "40" came from is not
+recoverable from the artifacts, and that is recorded rather than guessed at.
 
 So findings are now classified:
 
