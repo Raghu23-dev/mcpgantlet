@@ -22,6 +22,22 @@
 **Noise floor:** <!-- what variation appears with no change at all -->
 **Minimum detectable difference:** <!-- if the comparison is close, state it -->
 
+## Third-party audit (criterion 2)
+
+| | |
+|---|---|
+| Servers audited | 5, all reachable without credentials |
+| Servers implementing 2026-07-28 | **0** |
+| Version gaps (rule new in this revision) | 26 |
+| **Real defects** (rule unchanged across revisions) | **5, across 4 servers** |
+| Servers accepting `Origin: https://attacker.example` | **4 of 5** |
+
+```bash
+python bench/conformance/third_party.py
+```
+
+Full report: `bench/conformance/results/2026-08-21-third-party.md`.
+
 ## Against the success criteria
 
 | # | Criterion | Threshold | Result | Pass |

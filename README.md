@@ -2,6 +2,45 @@
 
 **Conformance and load checks for MCP servers on spec `2026-07-28`.**
 
+## Four of five public MCP servers accept requests from any website
+
+Identical request, sent twice — once with no `Origin`, once with `Origin: https://attacker.example`:
+
+| Server | Operator | No Origin | Hostile Origin | |
+|---|---|---|---|---|
+| learn.microsoft.com/api/mcp | Microsoft | 200 | **200** | accepts |
+| knowledge-mcp.global.api.aws | AWS | 200 | **200** | accepts |
+| mcp.deepwiki.com/mcp | Cognition | 200 | **200** | accepts |
+| gitmcp.io/docs | idosal | 200 | **200** | accepts |
+| **docs.mcp.cloudflare.com/mcp** | **Cloudflare** | 200 | **403** | **rejects** |
+
+Cloudflare is the control: same probe, same request shape, correct rejection — so the four
+acceptances are a property of those servers, not of the tool.
+
+`Origin` validation is the spec's defence against DNS rebinding, and the only rule whose absence
+is directly exploitable from a browser. It has been a MUST since the Streamable HTTP transport
+was introduced, so this is **not** a version gap.
+
+**And the finding that came from asking before measuring: none of the five implements the current
+revision.** All target 2025-03-26 or 2025-06-18. A naive audit would have reported ~40 MUST
+violations — 26 of them version gaps — which is the "97% flagged at under 50% precision" noise
+this tool exists not to add to. Findings are classified so the two never get conflated.
+
+Full method, disclosure position and the probe bug that got the right answer for the wrong reason:
+[`bench/conformance/results/2026-08-21-third-party.md`](bench/conformance/results/2026-08-21-third-party.md)
+
+**Live:** https://mcpgauntlet.vercel.app — a strictly conformant MCP 2026-07-28 server to
+test your client against, and the zero-false-positive claim as one request:
+
+```bash
+curl https://mcpgauntlet.vercel.app/audit/self
+# 10 probes, 0 violations, 0 inconclusive — CONFORMANT
+```
+
+There is deliberately no hosted auditor for arbitrary URLs: `docs/NON-GOALS.md` ruled that out
+before any code existed, and an auditor pointed at whatever a stranger types is a
+request-forgery gadget whether or not its probes are read-only.
+
 The first server it audited was my own. It failed **6 of 8 MUST requirements**.
 
 ## Why this exists
