@@ -9,7 +9,7 @@ authors = [{ name = "Raghuram P" }]
 # Runtime dependencies, not dev extras: the CLI needs httpx to probe, and the deployed
 # reference server needs fastapi. Declared here because Vercel's Python builder reads
 # pyproject.toml — the same gap that failed onewayglass's first two deploys.
-dependencies = ["httpx>=0.27", "fastapi>=0.121,<0.122"]
+dependencies = ["httpx>=0.27", "fastapi>=0.121,<0.142"]
 
 [project.optional-dependencies]
 # uvicorn is a DEV dependency because criterion 3 needs it: tests/correctness spins up the
