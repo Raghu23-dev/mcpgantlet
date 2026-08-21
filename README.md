@@ -2,6 +2,18 @@
 
 **Conformance and load checks for MCP servers on spec `2026-07-28`.**
 
+**Live:** https://mcpgauntlet.vercel.app — a strictly conformant MCP 2026-07-28 server to
+test your client against, and the zero-false-positive claim as one request:
+
+```bash
+curl https://mcpgauntlet.vercel.app/audit/self
+# 10 probes, 0 violations, 0 inconclusive — CONFORMANT
+```
+
+There is deliberately no hosted auditor for arbitrary URLs: `docs/NON-GOALS.md` ruled that out
+before any code existed, and an auditor pointed at whatever a stranger types is a
+request-forgery gadget whether or not its probes are read-only.
+
 The first server it audited was my own. It failed **6 of 8 MUST requirements**.
 
 ## Why this exists
