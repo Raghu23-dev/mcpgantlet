@@ -57,7 +57,7 @@ logging.basicConfig(
 )
 log = logging.getLogger("mcpgauntlet")
 
-VERSION = "0.1.0"
+VERSION = "0.3.1"
 
 app = FastAPI(title="mcpgauntlet reference server", version=VERSION, docs_url="/docs")
 
