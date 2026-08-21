@@ -195,7 +195,15 @@ def main() -> None:
     print(f"  servers targeting an earlier revision:  {sum(1 for r in report if r['version_gap'])}")
     print(f"  servers with a REAL defect:             {len(with_defects)}")
     for r in with_defects:
-        rules = ", ".join(str(d["rule"]) for d in r["real_defects"])  # type: ignore[index]
+        # `report` is dict[str, object], so this value is `object` and neither iterable nor
+        # indexable to mypy. The old `type: ignore[index]` silenced the wrong code and went
+        # stale, which is why strict mode failed here. Narrow instead of suppressing.
+        defects = r["real_defects"]
+        rules = (
+            ", ".join(str(d["rule"]) for d in defects if isinstance(d, dict))
+            if isinstance(defects, list)
+            else ""
+        )
         print(f"    {r['server']}: {rules}")
 
     print()

@@ -2,6 +2,11 @@
 
 **Conformance and load checks for MCP servers on spec `2026-07-28`.**
 
+<!-- SCREENCAST: Act 1 — curl the audit against a real public server; the Origin probe fails.
+     Act 2 — the same probe against Cloudflare, which returns 403; the control that proves the
+     tool works. Act 3 — the revision check, showing none of the five implements the spec being
+     audited, and the version-gap/real-defect split that keeps the report honest. -->
+
 ## Four of five public MCP servers accept requests from any website
 
 Identical request, sent twice — once with no `Origin`, once with `Origin: https://attacker.example`:

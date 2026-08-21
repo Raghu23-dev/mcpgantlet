@@ -135,11 +135,10 @@ class TestNoHostedAuditor:
     """
 
     def test_no_endpoint_accepts_an_arbitrary_target(self) -> None:
-        paths = [
-            r.path
-            for r in app.routes  # type: ignore[attr-defined]
-            if hasattr(r, "path")
-        ]
+        # `getattr` rather than `r.path` behind a stale `type: ignore[attr-defined]`: the
+        # hasattr guard already proves the attribute is there, and the suppression had
+        # become unused, which fails strict mode.
+        paths = [getattr(r, "path", None) for r in app.routes]
         assert "/audit" not in paths
         for candidate in ("/audit?url=", "/audit?target="):
             assert client.get(f"{candidate}http://example.com/mcp").status_code in (404, 422)

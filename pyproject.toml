@@ -12,7 +12,13 @@ authors = [{ name = "Raghuram P" }]
 dependencies = ["httpx>=0.27", "fastapi>=0.121,<0.122"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.8", "mypy>=1.13"]
+# uvicorn is a DEV dependency because criterion 3 needs it: tests/correctness spins up the
+# reference server in-process to prove the auditor reports zero false positives against a
+# conforming target. It was undeclared, so `uv sync` did not install it, so that module
+# failed to COLLECT and CI went red on every run including all three release tags — while
+# passing locally, where an earlier manual `pip install uvicorn` had left it behind.
+# The criterion the docs call "the one that makes the tool trustworthy" was never running.
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.8", "mypy>=1.13", "uvicorn>=0.32"]
 
 [tool.hatch.build.targets.wheel]
 # Explicit because the package lives in src/ and does not match the project name at the repo

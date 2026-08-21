@@ -79,9 +79,11 @@ async def main() -> None:
     print()
     if cliffs:
         print("cliffs found:")
-        for c in cliffs:
-            print(f"  concurrency {c.concurrency}  {c.kind}")
-            print(f"    {c.detail}")
+        # `cliff`, not `c`: the ramp loop above binds `c` to an int concurrency, and reusing
+        # the name here made mypy infer `int` for a Cliff and flag every attribute access.
+        for cliff in cliffs:
+            print(f"  concurrency {cliff.concurrency}  {cliff.kind}")
+            print(f"    {cliff.detail}")
     else:
         print("no cliff found across the tested range — the server degraded gracefully.")
         print("That is a real result: report it rather than escalating until something breaks.")
@@ -120,7 +122,7 @@ async def main() -> None:
     print(f"\nraw results → {out}")
 
 
-async def _calibrate(steps: list[int], per_step: int) -> dict[str, float]:
+async def _calibrate(steps: list[int], per_step: int) -> dict[int, float]:
     """Measure this harness's own maximum throughput.
 
     Serves a trivial endpoint in-process — no JSON parsing, no routing beyond a match —
