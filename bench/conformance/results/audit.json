@@ -4,11 +4,11 @@
     {
       "url": "https://trigsight.vercel.app/api/mcp",
       "counts": {
-        "pass": 4,
-        "fail": 6,
+        "pass": 10,
+        "fail": 0,
         "inconclusive": 0,
         "skipped": 0,
-        "must_violations": 6
+        "must_violations": 0
       },
       "findings": [
         {
@@ -23,9 +23,9 @@
           "rule": "get-405",
           "severity": "MUST",
           "clause": "Backward Compatibility / Earlier Revisions",
-          "verdict": "fail",
-          "observed": "200",
-          "detail": "GET answered with content. A client may read this as an older revision and negotiate down."
+          "verdict": "pass",
+          "observed": "405",
+          "detail": ""
         },
         {
           "rule": "delete-405",
@@ -39,41 +39,41 @@
           "rule": "protocol-version-header",
           "severity": "MUST",
           "clause": "Request Metadata / Protocol Version Header",
-          "verdict": "fail",
-          "observed": "200",
-          "detail": "A request without MCP-Protocol-Version was accepted, so the server cannot know which protocol era its caller speaks."
+          "verdict": "pass",
+          "observed": "400",
+          "detail": ""
         },
         {
           "rule": "header-body-match",
           "severity": "MUST",
           "clause": "Server Validation",
-          "verdict": "fail",
-          "observed": "200",
-          "detail": "Mcp-Name contradicted params.name and was not rejected. An intermediary routing on the header would disagree with what the server executes."
+          "verdict": "pass",
+          "observed": "400 / -32020",
+          "detail": ""
         },
         {
           "rule": "unknown-method-404",
           "severity": "MUST",
           "clause": "Request Metadata / Protocol Version Header",
-          "verdict": "fail",
-          "observed": "200 / code=-32601",
-          "detail": "An unknown method must return 404 with -32601 so a client can tell a modern server from a legacy 404."
+          "verdict": "pass",
+          "observed": "404 / -32601",
+          "detail": ""
         },
         {
           "rule": "no-initialize",
           "severity": "MUST",
           "clause": "Backward Compatibility",
-          "verdict": "fail",
-          "observed": "200, claims 2026-07-28",
-          "detail": "The server answers the removed initialize handshake while advertising 2026-07-28. If that version is 2026-07-28 it is advertising a revision it does not implement."
+          "verdict": "pass",
+          "observed": "404 \u2014 initialize not implemented",
+          "detail": ""
         },
         {
           "rule": "notification-202",
           "severity": "MUST",
           "clause": "Sending Messages 5",
-          "verdict": "fail",
-          "observed": "200",
-          "detail": "Expected 202 or a 4xx."
+          "verdict": "pass",
+          "observed": "202, empty body",
+          "detail": ""
         },
         {
           "rule": "accept-both",
