@@ -1,0 +1,214 @@
+{
+  "audited_against": "2026-07-28",
+  "servers": 5,
+  "all_target_earlier_revisions": true,
+  "servers_with_real_defects": 4,
+  "criterion_2_met": true,
+  "revision_independent_rules": [
+    "content-type-json",
+    "origin-403"
+  ],
+  "reports": [
+    {
+      "server": "microsoft-learn",
+      "url": "https://learn.microsoft.com/api/mcp",
+      "declared_revision": "2025-06-18",
+      "audited_against": "2026-07-28",
+      "version_gap": true,
+      "counts": {
+        "pass": 4,
+        "fail": 5,
+        "inconclusive": 1,
+        "skipped": 0,
+        "must_violations": 4
+      },
+      "real_defects": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "observed": "baseline 200, with foreign Origin 200",
+          "detail": "An identical request was accepted with Origin: https://attacker.example. A page on any website can therefore drive this endpoint through the visitor's browser via DNS rebinding. This requirement is unchanged across every revision of the Streamable HTTP transport, so it is not a version gap.",
+          "why_real": "this requirement is unchanged across revisions, so the server's own target revision requires it too"
+        }
+      ],
+      "version_gaps": [
+        {
+          "rule": "protocol-version-header",
+          "observed": "200"
+        },
+        {
+          "rule": "header-body-match",
+          "observed": "200"
+        },
+        {
+          "rule": "unknown-method-404",
+          "observed": "200 / code=None"
+        },
+        {
+          "rule": "session-id-ignored",
+          "observed": "echoed 'probe-value'"
+        }
+      ]
+    },
+    {
+      "server": "aws-knowledge",
+      "url": "https://knowledge-mcp.global.api.aws",
+      "declared_revision": "2025-03-26",
+      "audited_against": "2026-07-28",
+      "version_gap": true,
+      "counts": {
+        "pass": 3,
+        "fail": 7,
+        "inconclusive": 0,
+        "skipped": 0,
+        "must_violations": 7
+      },
+      "real_defects": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "observed": "baseline 200, with foreign Origin 200",
+          "detail": "An identical request was accepted with Origin: https://attacker.example. A page on any website can therefore drive this endpoint through the visitor's browser via DNS rebinding. This requirement is unchanged across every revision of the Streamable HTTP transport, so it is not a version gap.",
+          "why_real": "this requirement is unchanged across revisions, so the server's own target revision requires it too"
+        }
+      ],
+      "version_gaps": [
+        {
+          "rule": "get-405",
+          "observed": "302"
+        },
+        {
+          "rule": "delete-405",
+          "observed": "200"
+        },
+        {
+          "rule": "protocol-version-header",
+          "observed": "200"
+        },
+        {
+          "rule": "header-body-match",
+          "observed": "200"
+        },
+        {
+          "rule": "unknown-method-404",
+          "observed": "400 / code=-32600"
+        },
+        {
+          "rule": "no-initialize",
+          "observed": "200, claims 2025-03-26"
+        }
+      ]
+    },
+    {
+      "server": "cloudflare-docs",
+      "url": "https://docs.mcp.cloudflare.com/mcp",
+      "declared_revision": "2025-06-18",
+      "audited_against": "2026-07-28",
+      "version_gap": true,
+      "counts": {
+        "pass": 8,
+        "fail": 1,
+        "inconclusive": 1,
+        "skipped": 0,
+        "must_violations": 1
+      },
+      "real_defects": [],
+      "version_gaps": [
+        {
+          "rule": "protocol-version-header",
+          "observed": "200"
+        }
+      ]
+    },
+    {
+      "server": "deepwiki",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "declared_revision": "2025-06-18",
+      "audited_against": "2026-07-28",
+      "version_gap": true,
+      "counts": {
+        "pass": 4,
+        "fail": 5,
+        "inconclusive": 1,
+        "skipped": 0,
+        "must_violations": 5
+      },
+      "real_defects": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "observed": "baseline 200, with foreign Origin 200",
+          "detail": "An identical request was accepted with Origin: https://attacker.example. A page on any website can therefore drive this endpoint through the visitor's browser via DNS rebinding. This requirement is unchanged across every revision of the Streamable HTTP transport, so it is not a version gap.",
+          "why_real": "this requirement is unchanged across revisions, so the server's own target revision requires it too"
+        }
+      ],
+      "version_gaps": [
+        {
+          "rule": "get-405",
+          "observed": "406"
+        },
+        {
+          "rule": "protocol-version-header",
+          "observed": "200"
+        },
+        {
+          "rule": "header-body-match",
+          "observed": "400 / code=-32600"
+        },
+        {
+          "rule": "unknown-method-404",
+          "observed": "400 / code=-32600"
+        }
+      ]
+    },
+    {
+      "server": "gitmcp",
+      "url": "https://gitmcp.io/docs",
+      "declared_revision": "2025-03-26",
+      "audited_against": "2026-07-28",
+      "version_gap": true,
+      "counts": {
+        "pass": 5,
+        "fail": 5,
+        "inconclusive": 0,
+        "skipped": 0,
+        "must_violations": 4
+      },
+      "real_defects": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "observed": "baseline 200, with foreign Origin 200",
+          "detail": "An identical request was accepted with Origin: https://attacker.example. A page on any website can therefore drive this endpoint through the visitor's browser via DNS rebinding. This requirement is unchanged across every revision of the Streamable HTTP transport, so it is not a version gap.",
+          "why_real": "this requirement is unchanged across revisions, so the server's own target revision requires it too"
+        },
+        {
+          "rule": "accept-both",
+          "severity": "SHOULD",
+          "clause": "Sending Messages 6",
+          "observed": "text/plain;charset=UTF-8",
+          "detail": "A conforming client cannot parse this content type.",
+          "why_real": "this requirement is unchanged across revisions, so the server's own target revision requires it too"
+        }
+      ],
+      "version_gaps": [
+        {
+          "rule": "get-405",
+          "observed": "200"
+        },
+        {
+          "rule": "header-body-match",
+          "observed": "400 / code=-32000"
+        },
+        {
+          "rule": "unknown-method-404",
+          "observed": "400 / code=-32000"
+        }
+      ]
+    }
+  ]
+}

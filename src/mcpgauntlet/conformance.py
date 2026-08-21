@@ -12,6 +12,7 @@ one that turns it into a pass: both replace a measurement with an opinion.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any
@@ -81,12 +82,89 @@ def _json_error_code(response: httpx.Response) -> int | None:
     return err.get("code") if isinstance(err, dict) else None
 
 
+@dataclass(frozen=True, slots=True)
+class Revision:
+    """Which spec revision a server actually speaks.
+
+    WHY THIS EXISTS. Auditing every server against 2026-07-28 regardless of what it implements
+    produces confident nonsense. That revision removed sessions and the GET stream and ADDED
+    mandatory request-metadata headers, so a server built to 2025-06-18 fails most of its MUSTs
+    by construction — while being perfectly conformant to the revision it targets.
+
+    Five well-known public servers were checked before any of them was audited. All five spoke
+    2025-03-26 or 2025-06-18; none spoke 2026-07-28. Auditing them blind would have reported
+    roughly 40 MUST violations, every one a false positive, which is exactly the
+    "97% of servers flagged at under 50% precision" noise this tool exists not to add to.
+    """
+
+    declared: str | None
+    #: True when the server answers the pre-2026-07-28 `initialize` handshake at all.
+    responds_to_initialize: bool
+    detail: str = ""
+
+    @property
+    def matches_audited_spec(self) -> bool:
+        return self.declared == PROTOCOL_VERSION
+
+
 class Auditor:
     """Runs every probe against one endpoint."""
 
     def __init__(self, url: str, timeout: float = 15.0) -> None:
         self.url = url
         self._client = httpx.Client(timeout=timeout, follow_redirects=False)
+
+    def detect_revision(self) -> Revision:
+        """Ask the server which revision it speaks, before judging it against one.
+
+        Uses the legacy `initialize` handshake, because that is the only mechanism a
+        pre-2026-07-28 server has for declaring its revision — 2026-07-28 removed it. A server
+        that refuses `initialize` is either conformant to the current revision or unreachable,
+        and the two are distinguished by whether the other probes get answers.
+
+        Exactly one well-formed, read-only request. Nothing is mutated.
+        """
+        body = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+                "protocolVersion": "2025-06-18",
+                "capabilities": {},
+                "clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+            },
+        }
+        try:
+            r = self._client.post(
+                self.url,
+                json=body,
+                headers={
+                    "content-type": "application/json",
+                    "accept": "application/json, text/event-stream",
+                },
+            )
+        except httpx.HTTPError as exc:
+            return Revision(None, False, f"transport error: {exc}")
+
+        if r.status_code >= 400:
+            return Revision(
+                None,
+                False,
+                f"initialize refused with {r.status_code}, consistent with {PROTOCOL_VERSION} "
+                "which removed the initialize handshake",
+            )
+
+        # Servers may answer as JSON or as an SSE frame; both carry the same field.
+        declared = None
+        try:
+            declared = r.json().get("result", {}).get("protocolVersion")
+        except ValueError:
+            m = re.search(r'"protocolVersion"\s*:\s*"([^"]+)"', r.text)
+            declared = m.group(1) if m else None
+
+        if declared is None:
+            return Revision(None, True, "answered initialize but declared no protocolVersion")
+        return Revision(declared, True, f"declares {declared}")
 
     def close(self) -> None:
         self._client.close()
@@ -97,9 +175,15 @@ class Auditor:
     def __exit__(self, *_: object) -> None:
         self.close()
 
-    def run(self) -> list[Finding]:
+    def run(self, *, baseline_body: dict[str, Any] | None = None) -> list[Finding]:
+        """Every probe, in order. Does not consider which revision the server targets.
+
+        Callers auditing third-party servers should call `detect_revision()` first and report
+        the answer alongside these findings — a violation of 2026-07-28 by a server that
+        implements 2025-06-18 is a version gap, not a defect.
+        """
         return [
-            self.probe_origin(),
+            self.probe_origin(baseline_body=baseline_body),
             self.probe_get(),
             self.probe_delete(),
             self.probe_missing_version_header(),
@@ -113,25 +197,73 @@ class Auditor:
 
     # ── MUST rules ──────────────────────────────────────────────────────────
 
-    def probe_origin(self) -> Finding:
+    def probe_origin(self, *, baseline_body: dict[str, Any] | None = None) -> Finding:
+        """Is a foreign Origin rejected?
+
+        PAIRED WITH A BASELINE, and that is not optional. The first version sent one request
+        carrying a foreign Origin and failed the server on any non-403 response. Against five
+        public servers it reported four as vulnerable — on the strength of a 400, which is a
+        rejection. The servers had refused the request for protocol reasons before Origin was
+        ever evaluated, so the probe was measuring version mismatch and calling it a security
+        hole.
+
+        Now it sends the SAME request twice, once without an Origin and once with a hostile one.
+        The verdict comes only from the difference:
+
+          baseline fails         -> INCONCLUSIVE. Nothing can be concluded about Origin
+                                    handling from a request the server would reject anyway.
+          baseline ok, hostile rejected -> PASS
+          baseline ok, hostile ACCEPTED -> FAIL, and this one is real
+
+        With the pairing in place, the same five servers gave 4 vulnerable and 1 protected —
+        and the protected one returning 403 is the control proving the probe can detect the
+        difference at all.
+        """
         rule = RULES_BY_ID["origin-403"]
+        body = baseline_body or _rpc("tools/list")
+
         try:
-            r = self._client.post(
+            baseline = self._client.post(self.url, headers=_headers("tools/list"), json=body)
+        except httpx.HTTPError as exc:
+            return Finding(rule, Verdict.INCONCLUSIVE, "transport error", str(exc))
+
+        if baseline.status_code >= 400:
+            return Finding(
+                rule,
+                Verdict.INCONCLUSIVE,
+                f"baseline {baseline.status_code}",
+                "The same request without an Origin header was already refused, so this server's "
+                "Origin handling cannot be observed. Not a defect and not a pass — supply a "
+                "request this server accepts to test it.",
+            )
+
+        try:
+            hostile = self._client.post(
                 self.url,
                 headers={**_headers("tools/list"), "origin": "https://attacker.example"},
-                json=_rpc("tools/list"),
+                json=body,
             )
         except httpx.HTTPError as exc:
             return Finding(rule, Verdict.INCONCLUSIVE, "transport error", str(exc))
 
-        if r.status_code == 403:
+        if hostile.status_code == 403:
             return Finding(rule, Verdict.PASS, "403")
+        if hostile.status_code >= 400:
+            return Finding(
+                rule,
+                Verdict.PASS,
+                f"{hostile.status_code}",
+                f"Rejected with {hostile.status_code} rather than the 403 the spec names. The "
+                "security property holds; the status code does not match.",
+            )
         return Finding(
             rule,
             Verdict.FAIL,
-            f"{r.status_code}",
-            "A foreign Origin was not rejected. A remote page can drive this endpoint "
-            "via DNS rebinding.",
+            f"baseline {baseline.status_code}, with foreign Origin {hostile.status_code}",
+            "An identical request was accepted with Origin: https://attacker.example. A page on "
+            "any website can therefore drive this endpoint through the visitor's browser via DNS "
+            "rebinding. This requirement is unchanged across every revision of the Streamable "
+            "HTTP transport, so it is not a version gap.",
         )
 
     def probe_get(self) -> Finding:
