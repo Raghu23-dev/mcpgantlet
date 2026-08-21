@@ -1,0 +1,137 @@
+"""Conformance rules for MCP Streamable HTTP, revision 2026-07-28.
+
+Every rule cites the specification clause it enforces, because a conformance
+checker whose rules cannot be traced to the spec is just one person's opinion.
+
+Source: https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http
+
+WHAT CHANGED IN THIS REVISION, AND WHY IT MATTERS FOR AUDITING
+
+The 2026-07-28 revision removed protocol-level sessions, the GET stream endpoint,
+server-initiated JSON-RPC requests, and Last-Event-ID resumability. It ADDED mandatory
+request-metadata headers with server-side header/body validation.
+
+That combination means a server built to an earlier revision is not merely outdated —
+it fails several MUSTs of the current one, and a server built to the current one rejects
+traffic the earlier shape produces. Auditing for it is therefore not pedantry.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import Enum
+
+PROTOCOL_VERSION = "2026-07-28"
+
+
+class Severity(str, Enum):
+    MUST = "MUST"
+    SHOULD = "SHOULD"
+
+
+@dataclass(frozen=True, slots=True)
+class Rule:
+    id: str
+    severity: Severity
+    clause: str
+    description: str
+    rationale: str
+
+
+RULES: tuple[Rule, ...] = (
+    Rule(
+        id="origin-403",
+        severity=Severity.MUST,
+        clause="Security & Endpoint 1",
+        description="An invalid Origin header MUST be rejected with HTTP 403.",
+        rationale="Without it a remote web page can drive a local MCP server via DNS "
+        "rebinding. This is the only rule in the spec whose absence is directly "
+        "exploitable from a browser.",
+    ),
+    Rule(
+        id="get-405",
+        severity=Severity.MUST,
+        clause="Backward Compatibility / Earlier Revisions",
+        description="HTTP GET to the MCP endpoint SHOULD return 405 Method Not Allowed.",
+        rationale="The GET stream endpoint was removed. A server that answers GET with "
+        "content signals to a client that it speaks an older revision, causing the client "
+        "to negotiate down.",
+    ),
+    Rule(
+        id="delete-405",
+        severity=Severity.MUST,
+        clause="Backward Compatibility / Earlier Revisions",
+        description="HTTP DELETE SHOULD return 405 Method Not Allowed.",
+        rationale="DELETE terminated a session. Sessions no longer exist, so accepting "
+        "DELETE implies session state that is not there.",
+    ),
+    Rule(
+        id="protocol-version-header",
+        severity=Severity.MUST,
+        clause="Request Metadata / Protocol Version Header",
+        description="A POST omitting MCP-Protocol-Version MUST be rejected with 400.",
+        rationale="A server that accepts a version-less request cannot know which era its "
+        "caller speaks, so it cannot apply the right validation rules.",
+    ),
+    Rule(
+        id="header-body-match",
+        severity=Severity.MUST,
+        clause="Server Validation",
+        description="A header whose value contradicts the body MUST be rejected with 400 "
+        "and JSON-RPC error -32020 (HeaderMismatch).",
+        rationale="The spec's own justification: a load balancer may route on the header "
+        "while the server executes on the body. Divergence between the two is a security "
+        "vulnerability, not a formatting nit.",
+    ),
+    Rule(
+        id="unknown-method-404",
+        severity=Severity.MUST,
+        clause="Request Metadata / Protocol Version Header",
+        description="An unimplemented RPC method MUST return HTTP 404 with JSON-RPC error -32601.",
+        rationale="The JSON-RPC body distinguishes this from a legacy server's 404. A "
+        "server returning 200 for an unknown method breaks a client's era detection.",
+    ),
+    Rule(
+        id="no-initialize",
+        severity=Severity.MUST,
+        clause="Backward Compatibility",
+        description="A server claiming 2026-07-28 must not require an initialize handshake.",
+        rationale="Sessions and the initialize handshake were removed. A server that "
+        "answers initialize while advertising this revision is advertising a version it "
+        "does not implement.",
+    ),
+    Rule(
+        id="notification-202",
+        severity=Severity.MUST,
+        clause="Sending Messages 5",
+        description="An accepted JSON-RPC notification MUST return 202 with no body.",
+        rationale="A notification has no id, so a response body has nowhere to go. "
+        "Returning one implies a reply the client cannot correlate.",
+    ),
+    Rule(
+        id="accept-both",
+        severity=Severity.SHOULD,
+        clause="Sending Messages 6",
+        description="A request MUST be answered with application/json or text/event-stream.",
+        rationale="A client is required to support both, so any other content type is "
+        "unparseable by a conforming client.",
+    ),
+    Rule(
+        id="sse-no-buffering",
+        severity=Severity.SHOULD,
+        clause="Receiving Messages",
+        description="An SSE response SHOULD include X-Accel-Buffering: no.",
+        rationale="Reverse proxies buffer by default, which accumulates events and "
+        "destroys the real-time property that is the entire reason to stream.",
+    ),
+    Rule(
+        id="session-id-ignored",
+        severity=Severity.SHOULD,
+        clause="Backward Compatibility / Earlier Revisions",
+        description="An Mcp-Session-Id header SHOULD be ignored and never echoed.",
+        rationale="Echoing it tells a client sessions are supported, and the client will "
+        "then rely on state the server does not keep.",
+    ),
+)
+
+RULES_BY_ID = {r.id: r for r in RULES}

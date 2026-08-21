@@ -1,0 +1,97 @@
+{
+  "spec": "2026-07-28",
+  "targets": [
+    {
+      "url": "https://trigsight.vercel.app/api/mcp",
+      "counts": {
+        "pass": 10,
+        "fail": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "must_violations": 0
+      },
+      "findings": [
+        {
+          "rule": "origin-403",
+          "severity": "MUST",
+          "clause": "Security & Endpoint 1",
+          "verdict": "pass",
+          "observed": "403",
+          "detail": ""
+        },
+        {
+          "rule": "get-405",
+          "severity": "MUST",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "pass",
+          "observed": "405",
+          "detail": ""
+        },
+        {
+          "rule": "delete-405",
+          "severity": "MUST",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "pass",
+          "observed": "405",
+          "detail": ""
+        },
+        {
+          "rule": "protocol-version-header",
+          "severity": "MUST",
+          "clause": "Request Metadata / Protocol Version Header",
+          "verdict": "pass",
+          "observed": "400",
+          "detail": ""
+        },
+        {
+          "rule": "header-body-match",
+          "severity": "MUST",
+          "clause": "Server Validation",
+          "verdict": "pass",
+          "observed": "400 / -32020",
+          "detail": ""
+        },
+        {
+          "rule": "unknown-method-404",
+          "severity": "MUST",
+          "clause": "Request Metadata / Protocol Version Header",
+          "verdict": "pass",
+          "observed": "404 / -32601",
+          "detail": ""
+        },
+        {
+          "rule": "no-initialize",
+          "severity": "MUST",
+          "clause": "Backward Compatibility",
+          "verdict": "pass",
+          "observed": "404 \u2014 initialize not implemented",
+          "detail": ""
+        },
+        {
+          "rule": "notification-202",
+          "severity": "MUST",
+          "clause": "Sending Messages 5",
+          "verdict": "pass",
+          "observed": "202, empty body",
+          "detail": ""
+        },
+        {
+          "rule": "accept-both",
+          "severity": "SHOULD",
+          "clause": "Sending Messages 6",
+          "verdict": "pass",
+          "observed": "application/json",
+          "detail": ""
+        },
+        {
+          "rule": "session-id-ignored",
+          "severity": "SHOULD",
+          "clause": "Backward Compatibility / Earlier Revisions",
+          "verdict": "pass",
+          "observed": "not echoed",
+          "detail": ""
+        }
+      ]
+    }
+  ]
+}
