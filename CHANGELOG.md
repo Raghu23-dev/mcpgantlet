@@ -4,6 +4,8 @@ Generated from Conventional Commits. Notable changes per release.
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-08-21
+
 ### Fixed
 - **CI had failed on every run, including all three release tags.** `tests/correctness` imports
   `uvicorn`, which no dependency group declared, so the module failed to *collect* — criterion 3
