@@ -72,9 +72,16 @@ def create_reference_app() -> FastAPI:
             return _err(None, HEADER_MISMATCH, "body must be an object", 400)
 
         rid = body.get("id")
-        method = body.get("method") if isinstance(body.get("method"), str) else ""
-        params = body.get("params") if isinstance(body.get("params"), dict) else {}
-        meta = params.get("_meta") if isinstance(params.get("_meta"), dict) else {}
+        # Bound to locals before the isinstance check so the narrowing is provable. The
+        # `x.get(k) if isinstance(x.get(k), dict) else {}` form calls .get twice and mypy
+        # cannot tie the two calls together, so `params`/`meta` stayed Optional and every
+        # later .get() was an error under strict mode.
+        raw_method = body.get("method")
+        method = raw_method if isinstance(raw_method, str) else ""
+        raw_params = body.get("params")
+        params: dict[str, Any] = raw_params if isinstance(raw_params, dict) else {}
+        raw_meta = params.get("_meta")
+        meta: dict[str, Any] = raw_meta if isinstance(raw_meta, dict) else {}
 
         # MCP-Protocol-Version is required and must agree with the body's _meta.
         version = request.headers.get("mcp-protocol-version")
