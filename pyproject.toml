@@ -30,6 +30,7 @@ warn_unreachable = true
 # NOTE: in a file named pytest.ini this section must be [pytest]; inside
 # pyproject.toml it must be [tool.pytest.ini_options]. Getting this wrong makes
 # every setting here silently inert — a real bug observed in a production repo.
+pythonpath = ["src", "."]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 addopts = "--strict-markers"

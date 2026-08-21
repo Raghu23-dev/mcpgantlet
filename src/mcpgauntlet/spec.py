@@ -87,8 +87,7 @@ RULES: tuple[Rule, ...] = (
         id="unknown-method-404",
         severity=Severity.MUST,
         clause="Request Metadata / Protocol Version Header",
-        description="An unimplemented RPC method MUST return HTTP 404 with JSON-RPC "
-        "error -32601.",
+        description="An unimplemented RPC method MUST return HTTP 404 with JSON-RPC error -32601.",
         rationale="The JSON-RPC body distinguishes this from a legacy server's 404. A "
         "server returning 200 for an unknown method breaks a client's era detection.",
     ),

@@ -55,7 +55,9 @@ def _rpc(method: str, params: dict[str, Any] | None = None, rid: int | None = 1)
     return body
 
 
-def _headers(method: str, name: str | None = None, version: str | None = PROTOCOL_VERSION) -> dict[str, str]:
+def _headers(
+    method: str, name: str | None = None, version: str | None = PROTOCOL_VERSION
+) -> dict[str, str]:
     h = {
         "content-type": "application/json",
         "accept": "application/json, text/event-stream",
@@ -275,9 +277,16 @@ class Auditor:
         if r.status_code == 202 and not r.content:
             return Finding(rule, Verdict.PASS, "202, empty body")
         if r.status_code == 202:
-            return Finding(rule, Verdict.FAIL, "202 with a body", "A notification has no id, so a body has nowhere to go.")
+            return Finding(
+                rule,
+                Verdict.FAIL,
+                "202 with a body",
+                "A notification has no id, so a body has nowhere to go.",
+            )
         if 400 <= r.status_code < 500:
-            return Finding(rule, Verdict.PASS, f"{r.status_code} — notification declined, which is permitted")
+            return Finding(
+                rule, Verdict.PASS, f"{r.status_code} — notification declined, which is permitted"
+            )
         return Finding(rule, Verdict.FAIL, f"{r.status_code}", "Expected 202 or a 4xx.")
 
     # ── SHOULD rules ────────────────────────────────────────────────────────
@@ -291,7 +300,12 @@ class Auditor:
         ct = r.headers.get("content-type", "")
         if "application/json" in ct or "text/event-stream" in ct:
             return Finding(rule, Verdict.PASS, ct.split(";")[0])
-        return Finding(rule, Verdict.FAIL, ct or "(none)", "A conforming client cannot parse this content type.")
+        return Finding(
+            rule,
+            Verdict.FAIL,
+            ct or "(none)",
+            "A conforming client cannot parse this content type.",
+        )
 
     def probe_session_id_echo(self) -> Finding:
         rule = RULES_BY_ID["session-id-ignored"]
