@@ -19,12 +19,12 @@ traffic the earlier shape produces. Auditing for it is therefore not pedantry.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 PROTOCOL_VERSION = "2026-07-28"
 
 
-class Severity(str, Enum):
+class Severity(StrEnum):
     MUST = "MUST"
     SHOULD = "SHOULD"
 

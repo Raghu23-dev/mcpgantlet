@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 import httpx
@@ -21,7 +21,7 @@ import httpx
 from .spec import PROTOCOL_VERSION, RULES_BY_ID, Rule, Severity
 
 
-class Verdict(str, Enum):
+class Verdict(StrEnum):
     PASS = "pass"
     FAIL = "fail"
     INCONCLUSIVE = "inconclusive"
