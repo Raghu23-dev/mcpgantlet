@@ -135,3 +135,53 @@ RULES: tuple[Rule, ...] = (
 )
 
 RULES_BY_ID = {r.id: r for r in RULES}
+
+
+#: Rules whose requirement is UNCHANGED from 2025-03-26 through 2026-07-28. A violation of one of
+#: these is a real defect regardless of which revision the server targets.
+#:
+#: Moved here from `bench/conformance/third_party.py` when the CLI was added. A published tool
+#: cannot import from a benchmark directory, and the version-gap distinction is the thing that
+#: stops this reporting ~23 accurate-but-misleading findings per pre-2026-07-28 server.
+REVISION_INDEPENDENT: frozenset[str] = frozenset(
+    {
+        "origin-403",
+        # Both predate 2026-07-28 and are unchanged by it, so a failure is a real defect on any
+        # revision. Listed explicitly rather than left to `classify`'s default: relying on a fallback
+        # to reach the right answer means nobody has decided, and the next reader cannot tell whether
+        # the omission was a judgement or an oversight.
+        "accept-both",
+        "sse-no-buffering",
+    }
+)
+
+#: Rules that only exist, or only changed, in 2026-07-28. A server targeting an earlier revision
+#: failing these is a version gap and nothing more.
+INTRODUCED_IN_2026_07_28: frozenset[str] = frozenset(
+    {
+        "protocol-version-header",
+        "header-body-match",
+        "no-initialize",
+        "get-405",
+        "delete-405",
+        "session-id-ignored",
+        "unknown-method-404",
+        "notification-202",
+    }
+)
+
+
+def classify(rule_id: str, *, version_gap: bool) -> str:
+    """Is a violation a real defect, or an artefact of the server targeting an older revision?
+
+    Returns "defect" or "version-gap".
+
+    An unclassified rule returns "defect" deliberately. Excusing a violation the tool has no
+    opinion about would understate a real finding, and the failure should be visible rather than
+    quietly forgiven.
+    """
+    if rule_id in REVISION_INDEPENDENT:
+        return "defect"
+    if version_gap and rule_id in INTRODUCED_IN_2026_07_28:
+        return "version-gap"
+    return "defect"

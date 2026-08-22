@@ -5,8 +5,9 @@
   "servers_with_real_defects": 4,
   "criterion_2_met": true,
   "revision_independent_rules": [
-    "content-type-json",
-    "origin-403"
+    "accept-both",
+    "origin-403",
+    "sse-no-buffering"
   ],
   "reports": [
     {
