@@ -22,9 +22,15 @@ Identical request, sent twice — once with no `Origin`, once with `Origin: http
 Cloudflare is the control: same probe, same request shape, correct rejection — so the four
 acceptances are a property of those servers, not of the tool.
 
-`Origin` validation is the spec's defence against DNS rebinding, and the only rule whose absence
-is directly exploitable from a browser. It has been a MUST since the Streamable HTTP transport
-was introduced, so this is **not** a version gap.
+`Origin` validation is the spec's defence against DNS rebinding — an attack that bites hardest on
+servers reachable on localhost or a private network, where the server trusts its network position.
+It has been a MUST since the Streamable HTTP transport was introduced, so this is **not** a version
+gap.
+
+**What this is and is not.** Four servers do not enforce a MUST the spec places on them, and a
+client cannot distinguish a conformant server from a non-conformant one without checking. That is
+the result. It is *not* a claim that each deployment is exploitable — three are public and
+unauthenticated, where a browser adds little an attacker could not do from their own server.
 
 **And the finding that came from asking before measuring: none of the five implements the current
 revision.** All target 2025-03-26 or 2025-06-18. A naive audit would have reported ~40 MUST

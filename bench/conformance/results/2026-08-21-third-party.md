@@ -20,11 +20,11 @@ Each was sent an identical request twice: once with no `Origin` header, once wit
 Cloudflare is the control. Same probe, same request shape, correct rejection — so the four
 acceptances are a property of those servers and not an artifact of the tool.
 
-**Why it matters.** `Origin` validation is the spec's defence against DNS rebinding. Without it,
-a page on any website can drive the endpoint through a visitor's browser. It is the only rule in
-the specification whose absence is directly exploitable from a browser, and it has been a MUST
-since the Streamable HTTP transport was introduced — **unchanged across every revision**, so this
-is not a version gap.
+**Why it matters.** `Origin` validation is the spec's defence against DNS rebinding — an attack that matters most for servers reachable on localhost or a private network, where the server trusts its network position. It has been a MUST since the Streamable HTTP transport was introduced, so this is not a version gap.
+
+**What the finding is and is not.** These four servers do not enforce a MUST the specification places on them, and a client cannot tell a conformant server from a non-conformant one without checking. That is the conformance result and it stands.
+
+It is **not** a claim that each of these deployments is exploitable. Three of the four are public, unauthenticated services: a page can drive them through a visitor's browser, but an attacker could equally call them from their own server, so the browser adds little beyond the visitor's IP. The rule's real bite is on servers that are reachable locally or hold credentials — and whether a given deployment is either of those is not something an external probe can determine.
 
 ```bash
 python bench/conformance/third_party.py
@@ -126,6 +126,13 @@ including servers written by people who have read the specification" — holds, 
 found is not the one expected. It is not an obscure transport detail. It is the single
 security-relevant MUST in the specification, missing from four independently built servers
 operated by Microsoft, AWS, Cognition and an open-source maintainer.
+
+**Corrected 2026-08-22.** An earlier version of this report called the rule's absence "directly
+exploitable from a browser" without qualification. The tool's own rule text was precise — it says
+"a *local* MCP server" — but this writeup, the README and a drafted LinkedIn post all dropped the
+word. For a public unauthenticated server the browser adds little an attacker could not do from
+their own machine. Found while preparing a patch for one of the four; corrected in all three places
+before the post went out.
 
 And the more useful finding is the one that came from asking a question before running the tool:
 **the ecosystem has not migrated to the current revision at all.** A checker that had not asked
