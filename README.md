@@ -7,6 +7,23 @@
      tool works. Act 3 — the revision check, showing none of the five implements the spec being
      audited, and the version-gap/real-defect split that keeps the report honest. -->
 
+## Install
+
+```bash
+pipx install mcpgauntlet
+mcpgauntlet audit http://localhost:8000/mcp
+mcpgauntlet rules            # every rule with the spec clause it cites
+```
+
+Auditing a host you do not operate requires `--i-have-permission`. Every probe is read-only, but
+they are still unsolicited requests to someone else's server.
+
+Exit codes: `0` conformant · `1` real defect found · `2` refused to probe.
+
+A **version gap** — a rule that only exists in the audited revision, against a server targeting an
+older one — is reported but never exits non-zero. No public server implements 2026-07-28 yet, so
+failing on that would make this useless in CI against the servers that exist.
+
 ## Four of five public MCP servers accept requests from any website
 
 Identical request, sent twice — once with no `Origin`, once with `Origin: https://attacker.example`:

@@ -54,35 +54,11 @@ TARGETS = {
     "gitmcp": "https://gitmcp.io/docs",
 }
 
-#: Rules whose requirement is UNCHANGED from 2025-03-26 through 2026-07-28. A violation of one
-#: of these is a real defect regardless of which revision the server targets.
-#:
-#: `origin-403` is the important one: DNS-rebinding protection has been a MUST since the
-#: Streamable HTTP transport was introduced, and it is the only rule in the spec whose absence
-#: is directly exploitable from a browser.
-#:
-#: It is tested by PAIRING — the same request with and without a hostile Origin, using a request
-#: shape the server itself accepts. An unpaired probe reported 4 of these 5 servers as vulnerable
-#: on the strength of a 400, which is a rejection; they had refused the request for protocol
-#: reasons before Origin was evaluated. The paired version still finds 4 vulnerable, but now on
-#: evidence: identical accepted request, foreign Origin, still accepted.
-REVISION_INDEPENDENT = {
-    "origin-403",
-    "content-type-json",
-}
-
-#: Rules that only exist, or only changed, in 2026-07-28. A pre-2026-07-28 server failing these
-#: is a version gap and nothing more.
-INTRODUCED_IN_2026_07_28 = {
-    "protocol-version-header",
-    "header-body-match",
-    "no-initialize",
-    "get-405",
-    "delete-405",
-    "session-id-ignored",
-    "unknown-method-404",
-    "notification-202",
-}
+# Classification now lives in the package (mcpgauntlet.spec), not here. It was duplicated in this
+# benchmark, and the copy carried a phantom rule id — "content-type-json" matches no rule in
+# RULES, so the "real defect" set was effectively just origin-403 while appearing to hold two
+# entries. A set of strings that is never checked against the rules it names will drift.
+from mcpgauntlet.spec import INTRODUCED_IN_2026_07_28, REVISION_INDEPENDENT  # noqa: E402
 
 
 def main() -> None:
