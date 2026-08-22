@@ -14,8 +14,8 @@ from collections.abc import Iterator
 import pytest
 import uvicorn
 
-from mcpgauntlet.conformance import Auditor, Verdict
-from mcpgauntlet.spec import Severity
+from mcpgantlet.conformance import Auditor, Verdict
+from mcpgantlet.spec import Severity
 from tests.fixtures.reference_server import create_reference_app
 
 PORT = 8391
@@ -65,7 +65,7 @@ def test_every_probe_reaches_a_verdict(reference_url: str) -> None:
 
 def test_every_rule_cites_a_spec_clause() -> None:
     """Criterion 1: a rule without a clause is one person's opinion."""
-    from mcpgauntlet.spec import RULES
+    from mcpgantlet.spec import RULES
 
     assert RULES
     for rule in RULES:

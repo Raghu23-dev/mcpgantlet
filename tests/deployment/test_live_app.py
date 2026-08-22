@@ -27,8 +27,8 @@ sys.path.insert(0, str(_ROOT / "api"))
 
 from index import app
 
-from mcpgauntlet.conformance import Auditor
-from mcpgauntlet.spec import PROTOCOL_VERSION, RULES
+from mcpgantlet.conformance import Auditor
+from mcpgantlet.spec import PROTOCOL_VERSION, RULES
 
 client = TestClient(app)
 

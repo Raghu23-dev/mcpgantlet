@@ -40,8 +40,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from mcpgauntlet.conformance import Auditor, Verdict, summarise
-from mcpgauntlet.spec import PROTOCOL_VERSION, Severity
+from mcpgantlet.conformance import Auditor, Verdict, summarise
+from mcpgantlet.spec import PROTOCOL_VERSION, Severity
 
 #: Chosen for implementation diversity, not convenience: an Azure knowledge service, an
 #: AWS-native stack, Cloudflare's Workers/Agents-SDK stack, Cognition's own server, and an
@@ -54,11 +54,11 @@ TARGETS = {
     "gitmcp": "https://gitmcp.io/docs",
 }
 
-# Classification now lives in the package (mcpgauntlet.spec), not here. It was duplicated in this
+# Classification now lives in the package (mcpgantlet.spec), not here. It was duplicated in this
 # benchmark, and the copy carried a phantom rule id — "content-type-json" matches no rule in
 # RULES, so the "real defect" set was effectively just origin-403 while appearing to hold two
 # entries. A set of strings that is never checked against the rules it names will drift.
-from mcpgauntlet.spec import INTRODUCED_IN_2026_07_28, REVISION_INDEPENDENT  # noqa: E402
+from mcpgantlet.spec import INTRODUCED_IN_2026_07_28, REVISION_INDEPENDENT  # noqa: E402
 
 
 def main() -> None:
@@ -83,7 +83,7 @@ def main() -> None:
                     "params": {
                         "protocolVersion": revision.declared or "2025-06-18",
                         "capabilities": {},
-                        "clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+                        "clientInfo": {"name": "mcpgantlet", "version": "0.1.0"},
                     },
                 }
                 if revision.responds_to_initialize

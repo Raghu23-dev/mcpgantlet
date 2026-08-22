@@ -19,7 +19,7 @@ from urllib.parse import urlparse
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from mcpgauntlet.load import find_cliffs, run_step
+from mcpgantlet.load import find_cliffs, run_step
 
 LOCAL_HOSTS = {"localhost", "127.0.0.1", "::1", "0.0.0.0"}
 

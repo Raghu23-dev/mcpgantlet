@@ -4,6 +4,9 @@ WHY THESE EXIST: the README and a disclosure sent to a third-party maintainer bo
 readers to `pipx install` this package and run `mcpgauntlet audit <url>`. Neither worked — there was
 no entry point and no CLI module. The instruction was written before the thing it described, and
 nothing checked that the documented command existed.
+
+That old name is quoted as sent. The command is now `mcpgantlet`, and the entry-point test below
+asserts against the current name — quoting history in prose must not weaken the check.
 """
 
 from __future__ import annotations
@@ -13,8 +16,8 @@ import json
 import pytest
 from _pytest.capture import CaptureFixture
 
-from mcpgauntlet import cli
-from mcpgauntlet.spec import (
+from mcpgantlet import cli
+from mcpgantlet.spec import (
     INTRODUCED_IN_2026_07_28,
     REVISION_INDEPENDENT,
     RULES,
@@ -117,4 +120,4 @@ class TestEntryPointIsDeclared:
         root = pathlib.Path(__file__).resolve().parents[2]
         data = tomllib.loads((root / "pyproject.toml").read_text())
         scripts = data["project"].get("scripts", {})
-        assert scripts.get("mcpgauntlet") == "mcpgauntlet.cli:main"
+        assert scripts.get("mcpgantlet") == "mcpgantlet.cli:main"

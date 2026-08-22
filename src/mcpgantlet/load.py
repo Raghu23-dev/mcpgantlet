@@ -106,7 +106,7 @@ def _request_body(method: str = "tools/list") -> dict[str, Any]:
         "params": {
             "_meta": {
                 "io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION,
-                "io.modelcontextprotocol/clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+                "io.modelcontextprotocol/clientInfo": {"name": "mcpgantlet", "version": "0.1.0"},
                 "io.modelcontextprotocol/clientCapabilities": {},
             }
         },

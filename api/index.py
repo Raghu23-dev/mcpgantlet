@@ -1,4 +1,4 @@
-"""Live instance of the mcpgauntlet reference server, plus a self-audit.
+"""Live instance of the mcpgantlet reference server, plus a self-audit.
 
 WHY THIS AND NOT A HOSTED AUDITOR
 
@@ -47,19 +47,19 @@ _ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_ROOT))
 sys.path.insert(0, str(_ROOT / "src"))
 
-from mcpgauntlet.conformance import Auditor, Verdict
-from mcpgauntlet.spec import PROTOCOL_VERSION, RULES
+from mcpgantlet.conformance import Auditor, Verdict
+from mcpgantlet.spec import PROTOCOL_VERSION, RULES
 from tests.fixtures.reference_server import create_reference_app
 
 logging.basicConfig(
     level=logging.INFO,
     format='{"ts":"%(asctime)s","level":"%(levelname)s","msg":"%(message)s"}',
 )
-log = logging.getLogger("mcpgauntlet")
+log = logging.getLogger("mcpgantlet")
 
 VERSION = "0.3.2"
 
-app = FastAPI(title="mcpgauntlet reference server", version=VERSION, docs_url="/docs")
+app = FastAPI(title="mcpgantlet reference server", version=VERSION, docs_url="/docs")
 
 #: Mounted verbatim from tests/fixtures. The deployed server IS the fixture the test suite
 #: asserts zero findings against — not a reimplementation that could drift from it.
@@ -262,7 +262,7 @@ def index() -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>mcpgauntlet — a conformant MCP server to test against</title>
+<title>mcpgantlet — a conformant MCP server to test against</title>
 <style>
  :root {{ color-scheme: dark }}
  body {{ background:#0b0d10; color:#e7e9ee; font:16px/1.65 ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -281,7 +281,7 @@ def index() -> str:
  .n {{ color:#788092 }}
  .warn {{ border-left:2px solid #d4a24c; padding-left:1rem; color:#cfd3dc }}
 </style></head><body><main>
-<h1>mcpgauntlet</h1>
+<h1>mcpgantlet</h1>
 <p class="sub">A strictly conformant MCP {PROTOCOL_VERSION} server, live, to test your client
 against. v{VERSION} &middot; <a href="/docs">API docs</a> &middot; <a href="/health">health</a></p>
 
@@ -318,8 +318,8 @@ Auditing arbitrary targets stays a CLI, where whoever runs it is accountable for
 points.</p>
 
 <h2>Audit your own server</h2>
-<pre>pipx install git+https://github.com/Raghu23-dev/mcpgauntlet
-mcpgauntlet audit http://localhost:8000/mcp</pre>
+<pre>pipx install git+https://github.com/Raghu23-dev/mcpgantlet
+mcpgantlet audit http://localhost:8000/mcp</pre>
 </main>
 <script>document.body.innerHTML = document.body.innerHTML.replaceAll('{{HOST}}', location.origin);</script>
 </body></html>"""

@@ -49,7 +49,7 @@ def _rpc(method: str, params: dict[str, Any] | None = None, rid: int | None = 1)
         **(params or {}),
         "_meta": {
             "io.modelcontextprotocol/protocolVersion": PROTOCOL_VERSION,
-            "io.modelcontextprotocol/clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+            "io.modelcontextprotocol/clientInfo": {"name": "mcpgantlet", "version": "0.1.0"},
             "io.modelcontextprotocol/clientCapabilities": {},
         },
     }
@@ -131,7 +131,7 @@ class Auditor:
             "params": {
                 "protocolVersion": "2025-06-18",
                 "capabilities": {},
-                "clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+                "clientInfo": {"name": "mcpgantlet", "version": "0.1.0"},
             },
         }
         try:

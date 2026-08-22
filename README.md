@@ -1,4 +1,4 @@
-# mcpgauntlet
+# mcpgantlet
 
 **Conformance and load checks for MCP servers on spec `2026-07-28`.**
 
@@ -10,9 +10,9 @@
 ## Install
 
 ```bash
-pipx install mcpgauntlet
-mcpgauntlet audit http://localhost:8000/mcp
-mcpgauntlet rules            # every rule with the spec clause it cites
+pipx install mcpgantlet
+mcpgantlet audit http://localhost:8000/mcp
+mcpgantlet rules            # every rule with the spec clause it cites
 ```
 
 Auditing a host you do not operate requires `--i-have-permission`. Every probe is read-only, but

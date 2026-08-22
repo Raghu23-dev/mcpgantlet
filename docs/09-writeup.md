@@ -1,4 +1,4 @@
-# mcpgauntlet — Technical Writeup
+# mcpgantlet — Technical Writeup
 
 > **Gate:** all six sections present before the project counts as shipped.
 > Hand-written prose. This document is the primary evidence of technical communication.
