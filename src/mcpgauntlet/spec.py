@@ -146,10 +146,10 @@ RULES_BY_ID = {r.id: r for r in RULES}
 REVISION_INDEPENDENT: frozenset[str] = frozenset(
     {
         "origin-403",
-        # Both predate 2026-07-28 and are unchanged by it, so a failure is a real defect on any
-        # revision. Listed explicitly rather than left to `classify`'s default: relying on a fallback
-        # to reach the right answer means nobody has decided, and the next reader cannot tell whether
-        # the omission was a judgement or an oversight.
+        # Both predate 2026-07-28 and are unchanged by it, so a failure is a real defect on
+        # any revision. Listed explicitly rather than left to `classify`'s default: relying on
+        # a fallback to reach the right answer means nobody has decided, and the next reader
+        # cannot tell whether the omission was a judgement or an oversight.
         "accept-both",
         "sse-no-buffering",
     }
