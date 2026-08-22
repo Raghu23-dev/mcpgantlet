@@ -12,8 +12,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from mcpgauntlet.conformance import Auditor, Verdict, summarise
-from mcpgauntlet.spec import PROTOCOL_VERSION, Severity
+from mcpgantlet.conformance import Auditor, Verdict, summarise
+from mcpgantlet.spec import PROTOCOL_VERSION, Severity
 
 MARK = {Verdict.PASS: "pass", Verdict.FAIL: "FAIL", Verdict.INCONCLUSIVE: "?", Verdict.SKIPPED: "-"}
 

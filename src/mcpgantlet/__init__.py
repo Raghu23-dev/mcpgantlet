@@ -1,4 +1,4 @@
-"""mcpgauntlet — conformance and load auditing for MCP servers.
+"""mcpgantlet — conformance and load auditing for MCP servers.
 
 Every rule cites the specification clause it enforces, so a reader checks the spec
 rather than trusting this implementation's reading of it.

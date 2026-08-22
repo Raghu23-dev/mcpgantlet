@@ -4,6 +4,20 @@ Generated from Conventional Commits. Notable changes per release.
 
 ## [Unreleased]
 
+### Changed
+- **Renamed from `mcpgauntlet` to `mcpgantlet`.** PyPI refused the original name: it collapses
+  separators and folds `l`/`i` to `1` and `o` to `0` before comparing, so `mcpgauntlet` and the
+  unrelated `mcp-gauntlet` — published 2026-07-24, a month before this project — normalise to the
+  same string and cannot coexist. `gantlet` is the older spelling of the ordeal; `gauntlet` (the
+  armoured glove) is a long-standing confusion with it, so the correct spelling was also the
+  available one.
+  - The import path, console script and repo are all `mcpgantlet`. GitHub redirects the old repo
+    URL; `mcpgauntlet.vercel.app` is unchanged, because that URL appears in a vulnerability report
+    already sent to a third-party maintainer and breaking it would break their reproduce steps.
+  - Docstrings in `cli.py` and `tests/correctness/test_cli.py` still quote the old command name.
+    That is deliberate: they record what the sent report said, and rewriting them would falsify
+    the history they exist to preserve.
+
 ## [0.3.2] — 2026-08-21
 
 ### Fixed

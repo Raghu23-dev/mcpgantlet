@@ -5,6 +5,10 @@ WHY THIS EXISTS: the README and a disclosure sent to a third-party maintainer bo
 point and no CLI module, so the install produced a library and no command. The instruction was
 written before the thing it described.
 
+The old name is quoted above deliberately: it is what the sent report said. The package is now
+`mcpgantlet`, because PyPI rejected `mcpgauntlet` as too similar to an unrelated `mcp-gauntlet`
+published a month earlier.
+
 Deliberately argparse rather than typer or click: a conformance checker someone installs to audit
 their own server should not drag a CLI framework into their environment. The only runtime dependency
 is httpx, which the auditing genuinely needs.
@@ -65,7 +69,7 @@ def _audit(args: argparse.Namespace) -> int:
                 "params": {
                     "protocolVersion": revision.declared or "2025-06-18",
                     "capabilities": {},
-                    "clientInfo": {"name": "mcpgauntlet", "version": "0.1.0"},
+                    "clientInfo": {"name": "mcpgantlet", "version": "0.1.0"},
                 },
             }
         findings = auditor.run(baseline_body=baseline)
@@ -163,7 +167,7 @@ def _rules(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="mcpgauntlet",
+        prog="mcpgantlet",
         description=f"Conformance checker for MCP Streamable HTTP, revision {PROTOCOL_VERSION}.",
     )
     sub = parser.add_subparsers(dest="command", required=True)

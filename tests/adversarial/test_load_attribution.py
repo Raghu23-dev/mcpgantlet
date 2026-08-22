@@ -12,7 +12,7 @@ interpretation cannot ship again.
 
 from __future__ import annotations
 
-from mcpgauntlet.load import HARNESS_LIMIT_MARGIN, StepResult, find_cliffs, percentile
+from mcpgantlet.load import HARNESS_LIMIT_MARGIN, StepResult, find_cliffs, percentile
 
 
 def step(concurrency: int, latencies: list[float], failed: int = 0) -> StepResult:

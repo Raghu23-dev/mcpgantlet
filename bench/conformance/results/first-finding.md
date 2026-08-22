@@ -54,7 +54,7 @@ mandatory with a specific error code, and that an unknown method has a required 
 status.
 
 **A summary of a specification is not a specification.** That is the reusable lesson, and
-it is why every rule in `src/mcpgauntlet/spec.py` carries the clause it enforces — so a
+it is why every rule in `src/mcpgantlet/spec.py` carries the clause it enforces — so a
 future reader checks the spec rather than trusting my summary of it.
 
 ## Reproduce

@@ -102,7 +102,7 @@ vercel --prod
 
 ```bash
 vercel rollback                                     # previous production deployment
-vercel ls mcpgauntlet && vercel promote <url>       # or a specific one
+vercel ls mcpgantlet && vercel promote <url>       # or a specific one
 ```
 
 Stateless, no database, no migrations.

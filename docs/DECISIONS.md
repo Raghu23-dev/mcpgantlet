@@ -1,4 +1,4 @@
-# Decision Log — mcpgauntlet
+# Decision Log — mcpgantlet
 
 Appended **as decisions happen**, never reconstructed later. Short entries, 3–6 lines.
 Format: date · decision · alternatives · why · what would change it.
