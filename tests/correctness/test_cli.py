@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from _pytest.capture import CaptureFixture
 
 from mcpgauntlet import cli
 from mcpgauntlet.spec import (
@@ -62,7 +63,9 @@ class TestPermissionGuard:
     @pytest.mark.parametrize(
         "url", ["https://example.com/mcp", "http://192.168.1.10/mcp", "https://gitmcp.io/docs"]
     )
-    def test_a_remote_host_is_refused_without_the_flag(self, url: str, capsys) -> None:
+    def test_a_remote_host_is_refused_without_the_flag(
+        self, url: str, capsys: CaptureFixture[str]
+    ) -> None:
         code = cli.main(["audit", url])
         assert code == 2
         assert "Refusing to probe" in capsys.readouterr().err
@@ -88,14 +91,16 @@ class TestPermissionGuard:
 
 
 class TestRulesCommand:
-    def test_lists_every_rule_with_its_clause(self, capsys) -> None:
+    def test_lists_every_rule_with_its_clause(self, capsys: CaptureFixture[str]) -> None:
         assert cli.main(["rules"]) == 0
         out = capsys.readouterr().out
         for rule in RULES:
             assert rule.id in out
             assert rule.clause in out
 
-    def test_json_output_is_machine_readable_and_complete(self, capsys) -> None:
+    def test_json_output_is_machine_readable_and_complete(
+        self, capsys: CaptureFixture[str]
+    ) -> None:
         assert cli.main(["rules", "--json"]) == 0
         data = json.loads(capsys.readouterr().out)
         assert len(data) == len(RULES)
