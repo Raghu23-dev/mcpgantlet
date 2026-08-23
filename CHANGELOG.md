@@ -12,8 +12,14 @@ Generated from Conventional Commits. Notable changes per release.
   armoured glove) is a long-standing confusion with it, so the correct spelling was also the
   available one.
   - The import path, console script and repo are all `mcpgantlet`. GitHub redirects the old repo
-    URL; `mcpgauntlet.vercel.app` is unchanged, because that URL appears in a vulnerability report
-    already sent to a third-party maintainer and breaking it would break their reproduce steps.
+    URL.
+  - **The deployment now answers on both `mcpgantlet.vercel.app` (canonical) and
+    `mcpgauntlet.vercel.app`.** The first plan was to leave the Vercel project alone, on the
+    assumption that a `.vercel.app` subdomain is bound to the project name and renaming would
+    kill the old URL — which appears in a vulnerability report already sent to a third-party
+    maintainer. That assumption was wrong: Vercel lets a second `.vercel.app` subdomain be
+    attached to the same project, and both survive a project rename. So the canonical URL moved
+    and the old one keeps working, instead of trading one against the other.
   - Docstrings in `cli.py` and `tests/correctness/test_cli.py` still quote the old command name.
     That is deliberate: they record what the sent report said, and rewriting them would falsify
     the history they exist to preserve.

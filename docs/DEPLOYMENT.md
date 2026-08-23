@@ -3,13 +3,42 @@
 > **Gate:** "published to a package registry" is not deployment. A stranger must be able to hit
 > a running instance.
 
-**Live:** https://mcpgauntlet.vercel.app
+**Live:** https://mcpgantlet.vercel.app
 
 Criterion 3 in one request — zero findings against a server built strictly to spec:
 
 ```bash
-curl https://mcpgauntlet.vercel.app/audit/self
+curl https://mcpgantlet.vercel.app/audit/self
 ```
+
+## Two hostnames, deliberately
+
+The same deployment answers on both, and both must keep working:
+
+| hostname | role |
+|---|---|
+| `mcpgantlet.vercel.app` | canonical — matches the package and repo |
+| `mcpgauntlet.vercel.app` | kept alive; printed in a vulnerability report already sent to a third-party maintainer |
+
+The package was renamed because PyPI refused `mcpgauntlet` (it collides with an unrelated
+`mcp-gauntlet` once separators are stripped and `l`/`i`/`o` folded). The old hostname stayed because
+a URL in someone else's inbox is not ours to break, and Vercel issues no redirect for a retired
+`.vercel.app` subdomain — it simply stops resolving.
+
+A `.vercel.app` subdomain looks like it is bound to the project name, which is why the first plan
+here was to leave the project un-renamed entirely. It is not bound: a second one can be attached to
+the same project, and both survive a rename.
+
+```bash
+# attach an additional .vercel.app hostname (CLI has no verb for this; the API does)
+curl -X POST "https://api.vercel.com/v10/projects/$PROJECT_ID/domains?teamId=$TEAM_ID" \
+  -H "Authorization: Bearer $VERCEL_TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"mcpgantlet.vercel.app"}'
+```
+
+If a future change drops one of them, `/audit/self` on the dropped host returns nothing and the
+reproduce steps in `disclosure/` break silently — nothing in CI checks a hostname it is not told
+about. `health/digest.py` in the portfolio repo pings the canonical one daily.
 
 ## What is deployed, and what deliberately is not
 
