@@ -2,9 +2,14 @@
 
 Generated from Conventional Commits. Notable changes per release.
 
-## [Unreleased]
+## [0.5.0] — 2026-08-23
 
 ### Changed
+- **Version bumped to 0.5.0 rather than publishing 0.4.0.** A `v0.4.0` tag already existed from
+  before the rename, and that tagged tree declares `name = "mcpgauntlet"` — the name PyPI refused.
+  The workflow's tag-vs-version guard would have passed it, because 0.4.0 does equal 0.4.0; only
+  the name was wrong. A new version is the honest way to publish a renamed package, since a
+  rename is a breaking change for anyone importing it.
 - **Renamed from `mcpgauntlet` to `mcpgantlet`.** PyPI refused the original name: it collapses
   separators and folds `l`/`i` to `1` and `o` to `0` before comparing, so `mcpgauntlet` and the
   unrelated `mcp-gauntlet` — published 2026-07-24, a month before this project — normalise to the
