@@ -75,23 +75,70 @@ jobs:
           echo "failed=${fail# }" >> "$GITHUB_OUTPUT"
           [ -z "$fail" ] || echo "### Failing gates:$fail" >> "$GITHUB_STEP_SUMMARY"
 
+      # BOTH public hostnames, not just the canonical one.
+      #
+      # The deployment answers on mcpgantlet.vercel.app (canonical) and mcpgauntlet.vercel.app
+      # (the pre-rename name, printed in a vulnerability report already sent to a third-party
+      # maintainer). Vercel issues no redirect for a retired .vercel.app subdomain — it stops
+      # resolving — so if a future change drops one, the reproduce steps in that report break
+      # and nothing else would say so. An untested hostname is an unowned one.
+      #
+      # Checks the self-audit rather than the root page: a 200 on `/` only proves something is
+      # served, while /audit/self proves the MCP endpoint behind it still answers conformantly.
+      - name: the live deployment answers on every hostname it advertises
+        id: live
+        continue-on-error: true
+        run: |
+          fail=""
+          for host in mcpgantlet.vercel.app mcpgauntlet.vercel.app; do
+            # Retry: this endpoint audits itself over the network, so a cold start is slow but
+            # not broken. Three attempts before calling a host down.
+            ok=""
+            for attempt in 1 2 3; do
+              body=$(curl -sS --max-time 60 "https://$host/audit/self" 2>/dev/null) || body=""
+              if [ -n "$body" ] && printf '%s' "$body" \
+                   | python3 -c 'import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get("probes_run",0) > 0 and d.get("violations") == 0 else 1)' 2>/dev/null; then
+                ok="yes"; break
+              fi
+              sleep 10
+            done
+            if [ -n "$ok" ]; then
+              echo "  $host: conformant"
+            else
+              echo "::error::$host did not return a clean self-audit"
+              fail="$fail $host"
+            fi
+          done
+          echo "down=${fail# }" >> "$GITHUB_OUTPUT"
+          [ -z "$fail" ] || echo "### Hostnames not answering:$fail" >> "$GITHUB_STEP_SUMMARY"
+
       # An issue, not a silent log. A scheduled run nobody is notified about is a cron job that
       # writes to /dev/null — which is how the CVEs went unread in the first place.
       - name: raise an issue if anything is wrong
-        if: steps.audit.outputs.count != '0' || steps.gates.outputs.failed != ''
+        if: steps.audit.outputs.count != '0' || steps.gates.outputs.failed != '' || steps.live.outputs.down != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COUNT: ${{ steps.audit.outputs.count }}
           FINDINGS: ${{ steps.audit.outputs.json }}
           FAILED: ${{ steps.gates.outputs.failed }}
+          DOWN: ${{ steps.live.outputs.down }}
         run: |
           python - <<'PY' > body.md
           import json, os
           count = os.environ.get("COUNT", "0")
           failed = os.environ.get("FAILED", "")
+          down = os.environ.get("DOWN", "")
           print("Raised by the daily `health` workflow.\n")
           if failed:
               print(f"**Failing gates:** {failed}\n")
+          if down:
+              print(f"**Hostnames not returning a clean self-audit:** {down}\n")
+              print(
+                  "Both hostnames are load-bearing. `mcpgauntlet.vercel.app` is the pre-rename\n"
+                  "name and is printed in a vulnerability report already sent to a third-party\n"
+                  "maintainer; Vercel issues no redirect for a retired `.vercel.app` subdomain, so\n"
+                  "if it stopped resolving their reproduce steps are broken.\n"
+              )
           if count != "0":
               rows = json.loads(os.environ.get("FINDINGS") or "[]")
               print(f"**{count} vulnerable dependenc{'y' if count == '1' else 'ies'}:**\n")
@@ -114,10 +161,10 @@ jobs:
           fi
 
       - name: close the issue when everything is green
-        if: steps.audit.outputs.count == '0' && steps.gates.outputs.failed == ''
+        if: steps.audit.outputs.count == '0' && steps.gates.outputs.failed == '' && steps.live.outputs.down == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           for n in $(gh issue list --label health --state open --json number --jq '.[].number'); do
-            gh issue close "$n" --comment "Green as of $(date -u +%Y-%m-%dT%H:%MZ): no vulnerable dependencies, all gates passing."
+            gh issue close "$n" --comment "Green as of $(date -u +%Y-%m-%dT%H:%MZ): no vulnerable dependencies, all gates passing, both hostnames conformant."
           done

@@ -57,11 +57,11 @@ this tool exists not to add to. Findings are classified so the two never get con
 Full method, disclosure position and the probe bug that got the right answer for the wrong reason:
 [`bench/conformance/results/2026-08-21-third-party.md`](bench/conformance/results/2026-08-21-third-party.md)
 
-**Live:** https://mcpgauntlet.vercel.app — a strictly conformant MCP 2026-07-28 server to
+**Live:** https://mcpgantlet.vercel.app — a strictly conformant MCP 2026-07-28 server to
 test your client against, and the zero-false-positive claim as one request:
 
 ```bash
-curl https://mcpgauntlet.vercel.app/audit/self
+curl https://mcpgantlet.vercel.app/audit/self
 # 10 probes, 0 violations, 0 inconclusive — CONFORMANT
 ```
 
