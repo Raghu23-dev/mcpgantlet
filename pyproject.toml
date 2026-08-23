@@ -9,7 +9,20 @@ authors = [{ name = "Raghuram P" }]
 # Runtime dependencies, not dev extras: the CLI needs httpx to probe, and the deployed
 # reference server needs fastapi. Declared here because Vercel's Python builder reads
 # pyproject.toml — the same gap that failed onewayglass's first two deploys.
-dependencies = ["httpx>=0.27", "fastapi>=0.121,<0.142"]
+dependencies = [
+  "httpx>=0.27",
+  "fastapi>=0.121,<0.142",
+  # starlette is a TRANSITIVE dependency, pinned here on purpose.
+  #
+  # fastapi asks only for `starlette>=0.46.0`, so the resolver settled on 0.50.0 — which carries
+  # seven advisories (PYSEC-2026-161, -248, -249, -2280, -2281), the newest fixed in 1.3.1. The
+  # daily health workflow opened an issue for it; nothing in the direct dependency list was wrong,
+  # which is exactly why a transitive floor has to be stated rather than inferred.
+  #
+  # A floor, not an equality pin: a pin would go stale into the next advisory and produce a weekly
+  # red Dependabot PR that nobody merges.
+  "starlette>=1.3.1",
+]
 
 [project.optional-dependencies]
 # uvicorn is a DEV dependency because criterion 3 needs it: tests/correctness spins up the
