@@ -50,8 +50,8 @@ the result. It is *not* a claim that each deployment is exploitable — three ar
 unauthenticated, where a browser adds little an attacker could not do from their own server.
 
 **And the finding that came from asking before measuring: none of the five implements the current
-revision.** All target 2025-03-26 or 2025-06-18. A naive audit would have reported ~40 MUST
-violations — 26 of them version gaps — which is the "97% flagged at under 50% precision" noise
+revision.** All target 2025-03-26 or 2025-06-18. A naive audit would have reported 23 MUST
+violations — 18 of them version gaps — which is the "97% flagged at under 50% precision" noise
 this tool exists not to add to. Findings are classified so the two never get conflated.
 
 Full method, disclosure position and the probe bug that got the right answer for the wrong reason:

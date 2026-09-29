@@ -28,7 +28,7 @@
 |---|---|
 | Servers audited | 5, all reachable without credentials |
 | Servers implementing 2026-07-28 | **0** |
-| Version gaps (rule new in this revision) | 26 |
+| Version gaps (rule new in this revision) | 18 |
 | **Real defects** (rule unchanged across revisions) | **5, across 4 servers** |
 | Servers accepting `Origin: https://attacker.example` | **4 of 5** |
 
