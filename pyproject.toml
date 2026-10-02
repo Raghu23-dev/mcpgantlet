@@ -11,7 +11,7 @@ authors = [{ name = "Raghuram P" }]
 # pyproject.toml — the same gap that failed onewayglass's first two deploys.
 dependencies = [
   "httpx>=0.27",
-  "fastapi>=0.121,<0.142",
+  "fastapi>=0.121,<0.143",
   # starlette is a TRANSITIVE dependency, pinned here on purpose.
   #
   # fastapi asks only for `starlette>=0.46.0`, so the resolver settled on 0.50.0 — which carries
